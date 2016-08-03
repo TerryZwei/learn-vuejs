@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!--Hello World-->
+        <div id="app">1.
+            {{message}}
+        </div>
+        <!-- 双向绑定-->
+        <div id="app1">2.
+            <p>{{message}}</p>
+            <input v-model="message"/>
+        </div>
+        <!-- 渲染列表 -->
+        <div id="app2">3.
+            <ul>
+                <li v-for="todo in todos">{{todo.text}}</li>
+            </ul>
+        </div>
+        <!-- 处理用户输入 -->
+        <div id="app3">4.
+            <p>{{message}}</p>
+            <button v-on:click="reverseMessage">Reverse Message</button>
+        </div>
+        <!-- 综合 -->
+        <div id="app4">5.
+            <input v-model="newTodo" v-on:keyup.enter="addTodo"/>
+            <ul>
+                <li v-for="todo in todos">
+                    <span>{{todo.text}}</span>
+                    <button v-on:click="removeTodo($index)">X</button>
+                </li>
+            </ul>
+        </div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: '#app',
+                data: {
+                    message: 'Hello Vue.js!'
+                }
+            });
+
+            new Vue({
+                el: '#app1',
+                data: {
+                    message: 'Hello Vue.js!'
+                }
+            });
+
+            new Vue({
+                el: '#app2',
+                data: {
+                    todos: [
+                        { text: 'Learn JavaScript' },
+                        { text: 'Learn Vue.js' },
+                        { text: 'Build Something Awesome' }
+                    ]
+                }
+            });
+
+            new Vue({
+                el: '#app3',
+                data: {
+                    message: 'Hello Vue.js!'
+                },
+                methods: {
+                    reverseMessage: function() {
+                        this.message = this.message.split('').reverse().join('');
+                    }
+                }
+            });
+            
+            new Vue({
+                el: '#app4',
+                data: {
+                    newTodo: '',
+                    todos: [{
+                        text: 'Add some todos'
+                    }]
+                },
+                methods: {
+                    addTodo: function() {
+                        var text = this.newTodo.trim();
+                        if (text) {
+                            this.todos.push({text: text});
+                            this.newTodo = '';
+                        }
+                    },
+                    removeTodo: function(index){
+                        this.todos.splice(index,1);
+                    }
+                }
+            });
+        }());
+    </script>
+</html>
