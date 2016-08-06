@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .statics {
+                height: 30px;
+                border: 1px solid #000;
+            }
+            .class-a {
+                background: yellowgreen;
+            }
+            .class-b {
+                background: burlywood;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 计算属性 对象语法-->
+        <div id="app0" class="statics" v-bind:class="{'class-a':isA, 'class-b': isB}">
+            
+        </div>
+        <div id="app1" class="statics" v-bind:class="objectClass"></div>
+        <!-- 数组语法 -->
+        <div id="app2" class="statics" :class="[classA, classB]"></div>
+        <div id="app3" class="statics" :class="[classA, isB? classB: '']"></div>
+        <!-- 对象语法 -->
+        <div id="app4" class="statics" :style="{color: acitveColor, borderRadius: radius+ 'px'}"></div>
+        <div id="app5" class="statics" :style="objectClass"></div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: '#app0',
+                data: {
+                    isA: true,
+                    isB: false
+                }
+            });
+            new Vue({
+                el: '#app1',
+                data: {
+                    objectClass: {
+                        'class-a':false,
+                        'class-b': true
+                    }
+                }
+            });
+
+            new Vue({
+                el: '#app2',
+                data: {
+                    classA: 'class-a',
+                    classB: ''
+                }
+            });
+
+            new Vue({
+                el: '#app3',
+                data: {
+                    isB: true,
+                    classA: 'class-a',
+                    classB: 'class-b'
+                }
+            });
+
+            new Vue({
+                el: '#app4',
+                data: {
+                    acitveColor: 'red',
+                    radius: 10
+                }
+            });
+
+            new Vue({
+                el: '#app5',
+                data: {
+                    objectClass: {
+                        background: '#000',
+                        borderRadius: '10px'
+                    }
+                }
+            });
+        }());
+    </script>
+<html>

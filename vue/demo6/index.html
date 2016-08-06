@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- v-for -->
+        <ul id="app0">
+            <li v-for="item in items">{{$index}}.{{item.text}}</li>
+        </ul>
+        <ul id="app1">
+            <li v-for="(index,item) in items">{{index}}.{{item.text}}</li>
+        </ul>
+        <!-- 变异方法 -->
+        <div id="app2" >
+            <ul>
+                <li v-for="(index,item) in items">{{index}}.{{item.text}}</li>
+            </ul>
+        </div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: "#app0",
+                data: {
+                    items:[
+                        {
+                            text: 'Hello1'
+                        },
+                        {
+                            text: 'Hello2'
+                        },
+                        {
+                            text: 'Hello3'
+                        }
+                    ]
+                }
+            });
+
+            new Vue({
+                el: "#app1",
+                data: {
+                    items:[
+                        {
+                            text: 'Hello1'
+                        },
+                        {
+                            text: 'Hello2'
+                        },
+                        {
+                            text: 'Hello3'
+                        }
+                    ]
+                }
+            });
+        }());
+    </script>
+<html>

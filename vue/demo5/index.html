@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- v-if -->
+        <div id="app0">
+            <div v-if="ok">YES</div>
+            <div v-else>NO</div>
+        </div>
+        <!-- v-show -->
+        <div id="app1" v-show="ok">
+            Hell0
+        </div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: "#app0",
+                data: {
+                    ok: true
+                }
+            });
+
+            new Vue({
+                el: "#app1",
+                data: {
+                    ok: true
+                }
+            });
+        }());
+    </script>
+<html>
