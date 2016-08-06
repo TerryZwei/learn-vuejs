@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- 计算属性 -->
+        <div id="app0">
+            1.a={{a}}, b={{b}}
+        </div>
+        <div id="app1">
+            {{fullName}} {{firstName}} {{lastName}}
+        </div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            var vm = new Vue({
+                el: '#app0',
+                data: {
+                    a: 1,
+                },
+                computed: {
+                    b: function(){
+                        return this.a+100;
+                    }
+                }
+            });
+            setTimeout(function(){
+                vm.a = 50;
+            },2000);
+
+            var vm1 = new Vue({
+                el: '#app1',
+                data: {
+                    firstName: 'John',
+                    lastName: 'Yeo'
+                },
+                computed: {
+                    fullName:{
+                        get: function(){
+                            return this.firstName+ ' ' + this.lastName;
+                        },
+                        set: function(newVal){
+                            var names = newVal.split(' ');
+                            console.log(names);
+                            this.firstName = names[0];
+                            this.lastName = names[names.length -1];
+                        }
+                    }
+                }
+            });
+            setTimeout(function(){
+                vm1.fullName ="Joe Lee";
+            },2000);
+        }());
+    </script>
+<html>
