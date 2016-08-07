@@ -2,18 +2,30 @@
 <html>
     <body>
         <!-- v-for -->
-        <ul id="app0">
+        <ul id="app0">1.
             <li v-for="item in items">{{$index}}.{{item.text}}</li>
         </ul>
-        <ul id="app1">
+        <ul id="app1">2.
             <li v-for="(index,item) in items">{{index}}.{{item.text}}</li>
         </ul>
-        <!-- 变异方法 -->
-        <div id="app2" >
-            <ul>
-                <li v-for="(index,item) in items">{{index}}.{{item.text}}</li>
-            </ul>
-        </div>
+        <!-- track by -->
+        <ul id="app3">3.
+            <li v-for="item in items" track-by="_id">{{item.text}}</li>
+            <button v-on:click="shift()">SHIFT</button>
+        </ul>
+        <!-- $set -->
+        <ul id="app4">4.
+            <li v-for="item in items" track-by="_id">{{item.text}}</li>
+            <button v-on:click="test1()">test1</button>
+            <button v-on:click="test2()">test2</button>
+            <button v-on:click="test3()">$set</button>
+        </ul>
+        <!-- $key -->
+        <ul id="app5" class="demo">
+            <li v-for="value in object">
+                {{ $key }} : {{ value }}
+            </li>
+        </ul>
     </body>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
     <script>
@@ -49,6 +61,76 @@
                             text: 'Hello3'
                         }
                     ]
+                }
+            });
+
+            new Vue({
+                el: "#app3",
+                data: {
+                    items:[
+                        {
+                            _id: '8923ff00',
+                            text: 'Hello1'
+                        },
+                        {
+                            _id: '8023ff00',
+                            text: 'Hello2'
+                        },
+                        {
+                            _id: '8523ff00',
+                            text: 'Hello3'
+                        }
+                    ]
+                },
+                methods:{
+                    shift: function(){
+                        var tmpData = this.items.shift();
+                        this.items.push(tmpData);
+                    },
+                }
+            });
+
+            new Vue({
+                el: "#app4",
+                data: {
+                    items:[
+                        {
+                            _id: '8923ff00',
+                            text: 'Hello1'
+                        },
+                        {
+                            _id: '8023ff00',
+                            text: 'Hello2'
+                        },
+                        {
+                            _id: '8523ff00',
+                            text: 'Hello3'
+                        }
+                    ]
+                },
+                methods:{
+                    test1: function(){
+                        this.items[0] = {};
+                        console.log(this.items);
+                    },
+                    test2: function() {
+                        this.items.length = 0;
+                        console.log(this.items);
+                    },
+                    test3: function() {
+                        this.items.$set(0,{_id:'90890990',text:'Change'});
+                    }
+                }
+            });
+
+            new Vue({
+                el: '#app5',
+                data: {
+                    object: {
+                    FirstName: 'John',
+                    LastName: 'Doe',
+                    Age: 30
+                    }
                 }
             });
         }());

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- 方法处理器 -->
+        <div id="app0">
+            <button v-on:click="greet">Greet</button>
+        </div>
+        <!-- 内联语句处理器 -->
+        <div id="app1">
+            <button v-on:click="say('hi')">Hi</button>
+            <button v-on:click="say('yes')">YES</button>
+            <button v-on:click="say('some', $event)">preventDefault</button>
+        </div>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: "#app0",
+                data: {
+                    item: 'Hello Vue.js!'
+                },
+                methods: {
+                    greet: function() {
+                        alert(this.item);
+                        alert(event.target.tagName)
+                    }
+                }
+            });
+
+            new Vue({
+                el: "#app1",
+                methods: {
+                    say: function(val, e) {
+                        if (e) e.preventDefault();
+                        alert(val);
+                    }
+                }
+            });
+            
+        }());
+    </script>
+<html>
