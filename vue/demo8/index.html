@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- text -->
+        <div id="app0">
+            1.<span>Message:{{message}}</span><br>
+            <input type="text" v-model="message" placeholder="edit me"/>
+        </div>
+        <!-- Multiline text -->
+        <div id="app1">
+            2.<span>Message is:  {{message}}</span><br>
+            <textarea v-model="message" placeholder="add multiple lines"></textarea>
+        </div>
+        <!-- Checkbox -->
+        <div id="app2">
+            3.<input type="checkbox" id="checkbox" v-model="checked" />
+            <label for="checkbox">{{checked}}</label>
+            <br>
+            <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+            <label for="jack">Jack</label>
+            <input type="checkbox" id="john" value="John" v-model="checkedNames">
+            <label for="john">John</label>
+            <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+            <label for="mike">Mike</label>
+            <br>
+            <span>Checked names: {{ checkedNames | json }}</span>
+        </div>
+        <!-- Radio -->
+        <div id="app3">
+            4.<input type="radio" id="one" value="One" v-model="picked">
+            <label for="one">One</label>
+            <br>
+            <input type="radio" id="two" value="Two" v-model="picked">
+            <label for="two">Two</label>
+            <br>
+            <span>Picked: {{ picked }}</span>
+        </div>
+        <!-- select -->
+        <div id="app4">
+            5.<select v-model="selected">
+                <option selected>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            <span>Selected:{{selected}}</span>
+            <br>
+            <select v-model="s1">
+                <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
+            </select>
+            <span>Selected:{{s1}}</span>
+        </div>
+        <!-- lazy -->
+        <div id="app5">
+            6.<input type="text" v-model="msg" lazy/>
+            <p>MSG:{{msg}}</p>
+            <input type="text" v-model="msg1" number/>
+            <p>MSG:{{msg1}}</p>
+            <input type="text" v-model="msg2" debounce="500"/>
+            <p>MSG:{{msg2}}</p>
+        </div>
+
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+            new Vue({
+                el: "#app0",
+                data: {
+                }
+            });
+
+            new Vue({
+                el: "#app1",
+                data: {
+                }
+            });
+            new Vue({
+                el: "#app2",
+                data: {
+                    checked: false,
+                    checkedNames: []
+                }
+            });
+            new Vue({
+                el: "#app3",
+                data: {
+                }
+            });
+            new Vue({
+                el: "#app4",
+                data: {
+                    s1: 'A',
+                    options: [
+                        { text: 'One', value: 'A' },
+                        { text: 'Two', value: 'B' },
+                        { text: 'Three', value: 'C' }
+                    ]
+                }
+            });
+            new Vue({
+                el: "#app5",
+                data: {
+                }
+            });
+        }());
+    </script>
+<html>
