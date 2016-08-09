@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .expand-transition {
+            transition: all 0.3s ease;
+            height: 30px;
+            padding: 10px;
+            background: #eee;
+            overflow: hidden;
+        }
+        
+        .expand-enter,
+        .expand-leave {
+            height: 0;
+            padding: 0 10px;
+            opacity: 0;
+        }
+        
+        .bounce-transition {
+            display: inline-block;
+            /* 否则 scale 动画不起作用 */
+        }
+        
+        .bounce-enter {
+            animation: bounce-in .5s;
+        }
+        
+        .bounce-leave {
+            animation: bounce-out .5s;
+        }
+        
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bounce-out {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- css 过度 -->
+    <div id="app0">
+        1.
+        <div v-if="ok" transition="expand">YES</div>
+        <button @click="toggle">Toggle</button>
+    </div>
+    <!-- 自定义过渡类名 -->
+    <div id="app1" v-show="ok" class="animated" transition="bounce">
+        Hell0
+    </div>
+    <!-- 动画 -->
+    <div id="app2">
+        3. <span v-show="ok" transition="bounce">YES</span>
+        <br>
+        <button @click="toggle">Toggle</button>
+    </div>
+</body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+<script>
+        (function(){
+
+            Vue.transition('expand', {
+
+                beforeEnter: function (el) {
+                    el.textContent = 'beforeEnter'
+                },
+                enter: function (el) {
+                    el.textContent = 'enter'
+                },
+                afterEnter: function (el) {
+                    el.textContent = 'afterEnter'
+                },
+                enterCancelled: function (el) {
+                    // handle cancellation
+                },
+
+                beforeLeave: function (el) {
+                    el.textContent = 'beforeLeave'
+                },
+                leave: function (el) {
+                    el.textContent = 'leave'
+                },
+                afterLeave: function (el) {
+                    el.textContent = 'afterLeave'
+                },
+                leaveCancelled: function (el) {
+                    // handle cancellation
+                }
+            })
+
+            new Vue({
+                el: "#app0",
+                data: {
+                    ok: true,
+                },
+                methods: {
+                    toggle: function() {
+                        this.ok = !this.ok;
+                    }
+                }
+            });
+
+            // Vue.transition('bounce', {
+            //     enterClass: 'bounceInLeft',
+            //     leaveClass: 'bounceOutRight'
+            // });
+
+            new Vue({
+                el: "#app1",
+                data: {
+                    ok: true
+                }
+            });
+
+            new Vue({
+                el: "#app2",
+                data: {
+                    ok: true
+                },
+                methods: {
+                    toggle: function() {
+                        this.ok = !this.ok;
+                    }
+                }
+            });
+        }());
+    </script>
+<html>
