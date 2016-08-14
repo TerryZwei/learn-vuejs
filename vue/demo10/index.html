@@ -1,40 +1,80 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <!-- 注册 -->
-        <div id="app0">
+<style>
+    .fade-transition {
+        transition: opacity .3s ease;
+    }
+    
+    .fade-enter,
+    .fade-leave {
+        opacity: 0;
+    }
+</style>
+
+<body>
+    <!-- 注册 -->
+    <div id="app0">
+        <my-component></my-component>
+        <br>
+        <!-- 模板解析 -->
+        <table>
             <my-component></my-component>
-            <br>
-            <!-- 模板解析 -->
-            <table>
-                <my-component></my-component>
-            </table>
-            <br>
-            <table>
-                <tr is="my-component"></tr>
-            </table>
+        </table>
+        <br>
+        <table>
+            <tr is="my-component"></tr>
+        </table>
 
-        </div>
-        <!-- 局部注册 -->
-        <div id="app1">
-            
-        </div>
-        <!-- props -->
-        <div id="app2">
+    </div>
+    <!-- 局部注册 -->
+    <div id="app1">
 
+    </div>
+    <!-- props -->
+    <div id="app2">
+
+    </div>
+    <!-- 自定义事件 -->
+    <div id="app3">
+        <p>Messages: {{messages | json}}</p>
+        <child v-on:child-msg="handleIt"></child>
+    </div>
+    <template v-show="childShow" id="child-template">
+        <input type="text" v-model="msg" />
+        <button @click="notify">Dispatch Event</button>
+    </template>
+
+    <!-- slot 分发内容 -->
+    <template id="single-slot-comp">
+        <div>
+            <p>This is comp has one single slot</p>
+            <slot>This is slot's default content to display</slot>
+            <slot name="one"></slot>
+            <slot name="two"></slot>
         </div>
-        <!-- 自定义事件 -->
-        <div id="app3">
-            <p>Messages: {{messages | json}}</p>
-            <child v-on:child-msg="handleIt"></child>
-        </div>
-        <template id="child-template">
-            <input type="text" v-model="msg"/>
-            <button @click="notify">Dispatch Event</button>
-        </template>
-    </body>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
-    <script>
+    </template>
+    <div id="app4">
+        <slot-comp-1>
+            <span>parent content for slot</span>
+            <div slot="two">war and peace</div>
+            <div slot="one">123</div>
+        </slot-comp-1>
+    </div>
+    <!-- 动态组件 -->
+    <div id="app5">
+        <component :is="currentView" keep-alive transition="fade" transition-mode="out-in" v-for="item in items"></component>
+        <button @click="changes">change</button>
+    </div>
+    <!-- 异步组件 -->
+    <div id="app6">
+        <async-component inline-template>
+            <p>These are compiled as the component's own template</p>
+            <p>Not parent's transclusion content.</p>
+        </async-component>
+    </div>
+</body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+<script>
         (function(){
 
             //1.
@@ -72,9 +112,9 @@
 
             //3.
             var MyComponent3 = Vue.extend({
-                template: '<div >this is component<my-components3 :msg-info="msg"></my-components3></div>',
+                template: '<div v-show="childShow">this is component<my-components3 :msg-info="msg"></my-components3></div>',
                 data: function(){
-                    return {msg: 'Child components'}
+                    return {msg: 'Child components',childShow: true}
                 },
                 components: {
                     'my-components3': {
@@ -91,7 +131,7 @@
             Vue.component('child',{
                 template: '#child-template',
                 data: function(){
-                    return {data: 'hello'};
+                    return {data: 'hello',childShow: false,msg:'hello'};
                 },
                 methods: {
                     notify: function() {
@@ -105,7 +145,8 @@
             var Parent1 = new Vue({
                 el: '#app3',
                 data: {
-                    messages: []
+                    messages: [],
+                    childShow: false
                 },
                 // events: {
                 //     'child-msg': function(msg) {
@@ -118,6 +159,67 @@
                     }
                 }
 
+            });
+
+            new Vue({
+                el: '#app4',
+                data: {
+                    messages: []
+                },
+                methods: {
+                    handleIt: function(msg){
+                        this.messages.push(msg);
+                    }
+                }
+
+            });
+
+            Vue.component('slot-comp-1', {
+                template: '#single-slot-comp'
+            })
+            var sslot = new Vue({ el: '#app4'} )
+
+            //5.
+            new Vue({
+                el: "#app5",
+                data: {
+                    currentView: 'home',
+                    items: [1,2,3]
+                },
+                methods: {
+                    changes: function(){
+                        this.currentView = (this.currentView === 'home')? 'posts': 'home';
+                    }
+                },
+                components: {
+                    home: {
+                        template: '<div>home</div>',
+                        activate: function(done) {
+
+                            setTimeout(function(){
+                                console.log('activate');
+                                done();
+                            }, 1000);
+                            
+                        }
+                    },
+                    posts: {
+                        template: '<div>posts</div>'
+                    }
+                } 
+            });
+
+            //6.
+            Vue.component('async-component', function(resolve, reject){
+                setTimeout(function(){
+                    resolve({
+                        template: '<div>I am async!</div>'
+                    });
+                }, 1000);
+            });
+
+            new Vue({
+                el: '#app6'
             });
         }());
     </script>
