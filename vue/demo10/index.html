@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <!-- 注册 -->
+        <div id="app0">
+            <my-component></my-component>
+            <br>
+            <!-- 模板解析 -->
+            <table>
+                <my-component></my-component>
+            </table>
+            <br>
+            <table>
+                <tr is="my-component"></tr>
+            </table>
+
+        </div>
+        <!-- 局部注册 -->
+        <div id="app1">
+            
+        </div>
+        <!-- props -->
+        <div id="app2">
+
+        </div>
+        <!-- 自定义事件 -->
+        <div id="app3">
+            <p>Messages: {{messages | json}}</p>
+            <child v-on:child-msg="handleIt"></child>
+        </div>
+        <template id="child-template">
+            <input type="text" v-model="msg"/>
+            <button @click="notify">Dispatch Event</button>
+        </template>
+    </body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+    <script>
+        (function(){
+
+            //1.
+            //定义构造器
+            var MyComponent = Vue.extend({
+                template: '<div>A custom component</div>',
+                replace: true //是否要取代挂载点,即my-component,默认为true
+            });
+
+            //注册组件
+            Vue.component('my-component', MyComponent);
+
+            new Vue({
+                el: '#app0'
+            });
+
+            //2.
+            var Parent = Vue.extend({
+                template: '<div>I am Parent<my-component1></my-component1></div>',
+                replace: false,
+                components: {
+                    'my-component1': {
+                        template: '<div :data-id="a">Child{{a}}</div>',
+                        data: function(){
+                            return {a: 1};
+                        }//data和el对应的是一个函数
+                    }
+                }
+            });
+
+            new Parent({
+                el: '#app1'
+            });
+
+
+            //3.
+            var MyComponent3 = Vue.extend({
+                template: '<div >this is component<my-components3 :msg-info="msg"></my-components3></div>',
+                data: function(){
+                    return {msg: 'Child components'}
+                },
+                components: {
+                    'my-components3': {
+                        props: ['msgInfo'],
+                        template: '<div>{{msgInfo}}</div>'
+                    }
+                }
+            });
+            new MyComponent3({
+                el: "#app2"
+            });
+
+            //4.
+            Vue.component('child',{
+                template: '#child-template',
+                data: function(){
+                    return {data: 'hello'};
+                },
+                methods: {
+                    notify: function() {
+                        if (this.msg.trim()) {
+                            this.$dispatch('child-msg', this.msg);
+                            this.msg = '';
+                        }
+                    }
+                }
+            });
+            var Parent1 = new Vue({
+                el: '#app3',
+                data: {
+                    messages: []
+                },
+                // events: {
+                //     'child-msg': function(msg) {
+                //         this.messages.push(msg);
+                //     }
+                // }
+                methods: {
+                    handleIt: function(msg){
+                        this.messages.push(msg);
+                    }
+                }
+
+            });
+        }());
+    </script>
+<html>

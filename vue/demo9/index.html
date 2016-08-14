@@ -54,6 +54,20 @@
                 transform: scale(0);
             }
         }
+        ul {
+            padding-left: 0;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        .staggered-transition {
+            transition: all .5s ease;
+            overflow: hidden;
+            margin: 0;
+            height: 20px;
+        }
+        .staggered-enter, .staggered-leave {
+            opacity: 0;
+            height: 0;
+        }
     </style>
 </head>
 
@@ -73,6 +87,23 @@
         3. <span v-show="ok" transition="bounce">YES</span>
         <br>
         <button @click="toggle">Toggle</button>
+    </div>
+    <!-- javascript过渡 -->
+    <div id="app3" >
+        <p v-show="ok" transition="fade">JavaScript 过渡</p>
+        <br>
+        <button @click="toggle">Toggle</button>
+    </div>
+    <!-- 渐进过渡 -->
+    <div id="demo">
+        <input v-model="query">
+        <ul>
+            <li v-for="item in list | filterBy query"
+                transition="staggered"
+                stagger="100">
+            {{item.msg}}
+            </li>
+        </ul>
     </div>
 </body>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
@@ -120,11 +151,6 @@
                 }
             });
 
-            // Vue.transition('bounce', {
-            //     enterClass: 'bounceInLeft',
-            //     leaveClass: 'bounceOutRight'
-            // });
-
             new Vue({
                 el: "#app1",
                 data: {
@@ -141,6 +167,50 @@
                     toggle: function() {
                         this.ok = !this.ok;
                     }
+                }
+            });
+
+            new Vue({
+                el: "#app3",
+                data: {
+                    ok: true
+                },
+                methods: {
+                    toggle: function(){
+                        this.ok = !this.ok;
+                    }
+                }
+
+            });
+
+            Vue.transition('fade', {
+                css: 'fade',
+                enter: function(el, done){
+                    $(el).css('opacity', 0)
+                         .animate({opacity:1}, 100, done);
+                },
+                enterCancelled: function(el){
+                    $(el).stop();
+                },
+                leave: function(el, done) {
+                    $(el).animate({opacity: 0}, 1000, done);
+                },
+                leaveCancelled: function(el){
+                    $(el).stop();
+                }
+            });
+
+            new Vue({
+                el: '#demo',
+                data: {
+                    query: '',
+                    list: [
+                        { msg: 'Bruce Lee' },
+                        { msg: 'Jackie Chan' },
+                        { msg: 'Chuck Norris' },
+                        { msg: 'Jet Li' },
+                        { msg: 'Kung Fury' }
+                    ]
                 }
             });
         }());
