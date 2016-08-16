@@ -472,4 +472,367 @@ $ set DEBUG=true
 $ webpack-dev-server
 ```
 
+## Demo10: Code splitting 
 
+对于大型web应用把所有的代码打包到一个文件里是很没效率的一件事, Webpack允许你把它们分割到几个块去. 特别地，如果在某些情况下某些代码块被引用，这些代码是可以按需加载的.
+
+首先，你使用 `require.ensure` 去定义一个分割点. ([official document](http://webpack.github.io/docs/code-splitting.html))
+
+```javascript
+// main.js
+require.ensure(['./a'], function(require) {
+  var content = require('./a');
+  document.open();
+  document.write('<h1>' + content + '</h1>');
+  document.close();
+});
+```
+
+`require.ensure` 告诉 Webpack `./a.js` 应该从should be separated from `bundle.js` 分离出来并且单独构建到一个文件里面.
+
+```javascript
+// a.js
+module.exports = 'Hello World';
+```
+
+现在Webpack关心它的依赖, 输出文件和运行时的东西. 你不必把任何冗余的东西打包到你的 `index.html` 和 `webpack.config.js`.
+
+```html
+<html>
+  <body>
+    <script src="bundle.js"></script>
+  </body>
+</html>
+```
+
+webpack.config.js
+
+```javascript
+module.exports = {
+  entry: './main.js',
+  output: {
+    filename: 'bundle.js'
+  }
+};
+```
+
+启动应用.
+
+```bash
+$ webpack-dev-server
+```
+
+表面上，你是感受不到任何变化的. 然而, 事实上Webpack分别把 `main.js` 和 `a.js` 构建到不同的文件里(`bundle.js` 和 `1.bundle.js`), 需要的时候从 `bundle.js` 加载 `1.bundle.js`.
+
+## Demo11: Code splitting with bundle-loader
+
+其他方式分割代码是可以使用 [bundle-loader](https://www.npmjs.com/package/bundle-loader).
+
+```javascript
+// main.js
+
+// Now a.js is requested, it will be bundled into another file
+var load = require('bundle-loader!./a.js');
+
+// To wait until a.js is available (and get the exports)
+//  you need to async wait for it.
+load(function(file) {
+  document.open();
+  document.write('<h1>' + file + '</h1>');
+  document.close();
+});
+```
+
+`require('bundle-loader!./a.js')` 告诉Webpack从其他文件加载 `a.js`文件.
+
+Webpack 将会把 `main.js` 构建到 `bundle.js`, 和把 `a.js` 构建到 `1.bundle.js`.
+
+## Demo12: Common chunk
+
+当多个脚本拥有公共的代码块时，你能通过使用CommonsChunkPlugin插件把公共的代码块提取离到单独的文件里面去.
+
+```javascript
+// main1.jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+ReactDOM.render(
+  <h1>Hello World</h1>,
+  document.getElementById('a')
+);
+
+// main2.jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+ReactDOM.render(
+  <h2>Hello Webpack</h2>,
+  document.getElementById('b')
+);
+```
+
+index.html
+
+```html
+<html>
+  <body>
+    <div id="a"></div>
+    <div id="b"></div>
+    <script src="init.js"></script>
+    <script src="bundle1.js"></script>
+    <script src="bundle2.js"></script>
+  </body>
+</html>
+```
+
+webpack.config.js
+
+```javascript
+var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
+module.exports = {
+  entry: {
+    bundle1: './main1.jsx',
+    bundle2: './main2.jsx'
+  },
+  output: {
+    filename: '[name].js'
+  },
+  module: {
+    loaders:[
+      {
+        test: /\.js[x]?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react']
+        }
+      },
+    ]
+  },
+  plugins: [
+    new CommonsChunkPlugin('init.js')
+  ]
+}
+```
+
+## Demo13: Vendor chunk
+
+通过使用CommonsChunkPlugin插件也能够提取公共引用库到一个分离文件里面.
+
+main.js
+
+```javascript
+var $ = require('jquery');
+$('h1').text('Hello World');
+```
+
+index.html
+
+```html
+<html>
+  <body>
+    <h1></h1>
+    <script src="vendor.js"></script>
+    <script src="bundle.js"></script>
+  </body>
+</html>
+```
+
+webpack.config.js
+
+```javascript
+var webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    app: './main.js',
+    vendor: ['jquery'],
+  },
+  output: {
+    filename: 'bundle.js'
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin(/* chunkName= */'vendor', /* filename= */'vendor.js')
+  ]
+};
+```
+
+如果你想一个模块作为一个变量在每一个模块里面都可用,譬如使用 $ 和 jQuery 在每一个模块里面都可用而不是通过 `require("jquery")`的形式.你应该使用 `ProvidePlugin` ([Official doc](http://webpack.github.io/docs/shimming-modules.html)).
+
+```javascript
+// main.js
+$('h1').text('Hello World');
+
+
+// webpack.config.js
+var webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    app: './main.js'
+  },
+  output: {
+    filename: 'bundle.js'
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
+    })
+  ]
+};
+```
+## Demo14: Exposing global variables 
+
+如果你想使用某些全局变量, 又不想在Webpack包含它们，你应该在 `webpack.config.js` ([official document](http://webpack.github.io/docs/library-and-externals.html)) 启用 `externals` 属性.
+
+For example, we have a `data.js`.
+
+```javascript
+var data = 'Hello World';
+```
+
+We can expose `data` as a global variable.
+
+```javascript
+// webpack.config.js
+module.exports = {
+  entry: './main.jsx',
+  output: {
+    filename: 'bundle.js'
+  },
+  module: {
+    loaders:[
+      {
+        test: /\.js[x]?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react']
+        }
+      },
+    ]
+  },
+  externals: {
+    // require('data') is external and available
+    //  on the global var data
+    'data': 'data'
+  }
+};
+```
+
+现在,你可以在你的脚本里引用 `data` 作为一个模块变量. 但是事实上它已经是一个全局变量了.
+
+```javascript
+// main.jsx
+var data = require('data');
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+ReactDOM.render(
+  <h1>{data}</h1>,
+  document.body
+);
+```
+
+## Demo15: Hot Module Replacement 
+
+[Hot Module Replacement](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) (HMR)热加载模块修改、添加或者是删除模块时候，应用都是自动加载的 **而不是通过手动刷新**.
+
+你可以使用下面这[两种方式](http://webpack.github.io/docs/webpack-dev-server.html#hot-module-replacement) 启用热加载模块.
+
+(1) Specify `--hot` and `--inline` on the command line
+
+```bash
+$ webpack-dev-server --hot --inline
+```
+
+Meaning of the options:
+
+- `--hot`: 添加HotModuleReplacementPlugin插件和把服务转换到热加载模式.
+- `--inline`: 把webpack-dev-server运行时嵌入到执行文件里.
+- `--hot --inline`: 添加webpack/hot/dev-server 入口.
+
+(2) Modify `webpack.config.js`.
+
+- 添加 `new webpack.HotModuleReplacementPlugin()` 到 `plugins` 这个属性里
+- 添加 `webpack/hot/dev-server` 和 `webpack-dev-server/client?http://localhost:8080` 到 `entry` 这个属性下
+
+`webpack.config.js` looks like the following.
+
+```javascript
+var webpack = require('webpack');
+var path = require('path');
+
+module.exports = {
+  entry: [
+    'webpack/hot/dev-server',
+    'webpack-dev-server/client?http://localhost:8080',
+    './index.js'
+  ],
+  output: {
+    filename: 'bundle.js',
+    publicPath: '/static/'
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  module: {
+    loaders: [{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015', 'react']
+      },
+      include: path.join(__dirname, '.')
+    }]
+  }
+};
+```
+
+启动服务.
+
+```bash
+$ webpack-dev-server
+```
+
+浏览 http://localhost:8080, 你能在浏览器上看到 'Hello World' .
+
+不要关闭服务.打开终端编辑 `App.js`, 修改 'Hello World' 为 'Hello Webpack'. 保存, 并观察浏览器上面的变化.
+
+App.js
+
+```javascript
+import React, { Component } from 'react';
+
+export default class App extends Component {
+  render() {
+    return (
+      <h1>Hello World</h1>
+    );
+  }
+}
+```
+
+index.js
+
+```javascript
+import React from 'react';
+import ReactDOM = require('react-dom');
+import App from './App';
+
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+index.html
+
+```html
+<html>
+  <body>
+    <div id='root'></div>
+    <script src="/static/bundle.js"></script>
+  </body>
+</html>
+```
