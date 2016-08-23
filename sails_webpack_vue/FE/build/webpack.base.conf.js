@@ -80,6 +80,17 @@ module.exports = {
     formatter: require('eslint-friendly-formatter')
   },
   vue: {
-    loaders: utils.cssLoaders()
+    loaders: utils.cssLoaders(),
+    postcss: [require('postcss-px2rem')({
+      baseDpr: 1,           // base device pixel ratio (default: 2)
+      threeVersion: false,  // whether to generate @1x, @2x and @3x version(default: false)
+      remVersion: true,     // whether to generate rem version(default: true)
+      remUnit: 37.5,        //  rem unit value (default: 75)
+      remPrecision: 3       // rem precision (default: 6) 
+    })],
+    autoprefixer: {
+      browers: ["Android >= 2.3", "iOS >= 4"], //, "ChromeAndroid > 1%"
+      cascade: false  // 不美化输出 css
+    }
   }
 }
