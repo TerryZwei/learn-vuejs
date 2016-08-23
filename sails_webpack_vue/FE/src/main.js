@@ -5,8 +5,8 @@ import Vue_Router from 'vue-router'
 import Vue_Resource from 'vue-resource'
 
 import routerMap from './routers'
-import App from './App'
-
+// import App from './App'
+let App = Vue.extend({});
 Vue.use(Vue_Router);
 Vue.use(Vue_Resource);
 
