@@ -1,6 +1,6 @@
 'use strict'
 
-import list from './views/list'
+import list from '../views/test_views'
 
 export default function (router) {
   router.map({

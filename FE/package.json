@@ -1,7 +1,7 @@
 {
-  "name": "sailsfe",
+  "name": "sails_frontend",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "sails wechat project",
   "author": "Terry <gyweizhiwei@gmail.com>",
   "private": true,
   "scripts": {
@@ -27,7 +27,6 @@
     "babel-register": "^6.0.0",
     "chai": "^3.5.0",
     "chromedriver": "^2.21.2",
-    "commander": "^2.9.0",
     "connect-history-api-fallback": "^1.1.0",
     "cross-spawn": "^2.1.5",
     "css-loader": "^0.23.0",
@@ -56,6 +55,8 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "0.0.24",
     "karma-webpack": "^1.7.0",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
     "lolex": "^1.4.0",
     "mocha": "^2.4.5",
     "nightwatch": "^0.8.18",

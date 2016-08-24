@@ -3,18 +3,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
+import FastClick from 'fastclick'
 
-import routerMap from './routers'
+import routerMap from './routers/index'
+import filters from './filters'
+Object.keys(filters).forEach((k) => Vue.filter(k, filters[k]))
+
 // import App from './App'
 let App = Vue.extend({})
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
+FastClick.attach(window.document.body)
+
 let router = new VueRouter({
   hashbang: false,
-  history: true,
-  saveScrollPosition: false,
-  transitionOnLoad: true
+  history: true
 })
 
 router.beforeEach(function () {
