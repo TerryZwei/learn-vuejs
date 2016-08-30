@@ -5,21 +5,21 @@ import list from './views/list'
 export default function (router) {
   router.map({
     '/': {
-      component: list
-        // subRoutes: {
-        //     '/': {
-        //         //匹配路由/ 里面的router-view
-        //         component: listDefault
-        //     },
-        //     '/theme/:id': {
-        //         name: 'theme',
-        //         component: listTheme
-        //     },
-        //     '/author/:id': {
-        //         name: 'author',
-        //         component: author
-        //     }
+      component: list,
+      subRoutes: {
+        '/': {
+          //匹配路由/ 里面的router-view
+          component: listDefault
+        }
+        // '/theme/:id': {
+        //   name: 'theme',
+        //   component: listTheme
+        // },
+        // '/author/:id': {
+        //   name: 'author',
+        //   component: author
         // }
+      }
     }
 
     // '/detail/:id': {

@@ -4,7 +4,9 @@ var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
 
 module.exports = {
-  entry: './src/'+config.dev.folderName+'/main.js',
+  entry: {
+    app: './src/'+config.dev.folderName+'/main.js'
+  },
   output: {
     path: config.build.assetsRoot,
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
@@ -80,14 +82,14 @@ module.exports = {
   vue: {
     loaders: utils.cssLoaders(),
     postcss: [require('postcss-px2rem')({
-      baseDpr: 1,           // base device pixel ratio (default: 2)
-      threeVersion: false,  // whether to generate @1x, @2x and @3x version(default: false)
-      remVersion: true,     // whether to generate rem version(default: true)
-      remUnit: 37.5,        //  rem unit value (default: 75)
-      remPrecision: 3       // rem precision (default: 6) 
+      baseDpr: 1,             // base device pixel ratio (default: 2)
+      threeVersion: false,    // whether to generate @1x, @2x and @3x version (default: false)
+      remVersion: true,       // whether to generate rem version (default: true)
+      remUnit: 37.5,            // rem unit value (default: 75)
+      remPrecision: 3         // rem precision (default: 6)
     })],
     autoprefixer: {
-      browers: ["Android >= 2.3", "iOS >= 4"], //, "ChromeAndroid > 1%"
+      browsers: ["Android >= 2.3", "iOS >= 4"], //, "ChromeAndroid > 1%"
       cascade: false  // 不美化输出 css
     }
   }
