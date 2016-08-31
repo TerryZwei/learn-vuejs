@@ -24,10 +24,11 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    // new webpack.ProvidePlugin({
+    new webpack.ProvidePlugin({
     //   FastClick: 'fastclick',
     //   Vue: 'vue'
-    // }),
+      $: 'zepto'
+    }),
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',

@@ -1,18 +1,23 @@
 <template>
   <div class="list-header">
-    <div class="header-icon"><i class="iconfont">&#xe612</i></div>
+    <div class="header-icon" @click="showBar"><i class="iconfont">&#xe612</i></div>
+    <div class="header-cont"><p>首页</p></div>
+    <div class="header-icon"><i class="iconfont">&#xe610</i></div>
+    <div class="header-icon"><i class="iconfont">&#xe619</i></div>
   </div>
 </template>
 
 <script>
   export default{
-    props: [],
+    props: ['showSidebar'],
     data () {
       return {
       }
     },
     methods: {
-
+      showBar () {
+        this.showSidebar = !this.showSidebar
+      }
     }
   }
 </script>
@@ -40,6 +45,15 @@
       text-align: center;
       i {
         line-height: 50px;
+      }
+    }
+    .header-cont{
+      flex: 6;
+      padding-left: 10px;
+      p{
+        line-height: 50px;
+        color: #ffffff;
+        font-size:16px;
       }
     }
   }

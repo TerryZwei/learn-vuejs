@@ -2,6 +2,7 @@
 
 import list from '../views/list-views'
 import listDefault from '../components/list-default'
+import author from '../views/author'
 
 export default function (router) {
   router.map({
@@ -11,15 +12,15 @@ export default function (router) {
         '/': {
           // 匹配路由/ 里面的router-view
           component: listDefault
-        }
+        },
         // '/theme/:id': {
         //   name: 'theme',
         //   component: listTheme
         // },
-        // '/author/:id': {
-        //   name: 'author',
-        //   component: author
-        // }
+        '/author/:id': {
+          name: 'author',
+          component: author
+        }
       }
     }
 
