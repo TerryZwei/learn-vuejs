@@ -15,10 +15,14 @@ module.exports = {
     env: require('./prod.env'),
     projectName: project,
     folderName: folder,
-    index: path.resolve(__dirname, '../../'+project+'/assets/js/dist/'+folder+'/index.html'),
-    assetsRoot: path.resolve(__dirname, '../../'+project+'/assets/js/dist/'),
-    assetsSubDirectory: folder+'/static',
-    assetsPublicPath: '/js/dist/',
+    // index: path.resolve(__dirname, '../../'+project+'/assets/js/dist/'+folder+'/index.html'),
+    // assetsRoot: path.resolve(__dirname, '../../'+project+'/assets/js/dist/'),
+    // assetsSubDirectory: folder+'/static',
+    // assetsPublicPath: '/js/dist/',
+    index: path.resolve(__dirname, '../public/index.html'),
+    assetsRoot: path.resolve(__dirname, '../public'),
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
