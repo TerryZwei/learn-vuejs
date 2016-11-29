@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -51,6 +53,9 @@ export default {
       },
     };
   },
+  computed: mapGetters({
+    timeEntry: 'entryData',
+  }),
   methods: {
     save() {
       const timeEntry = this.timeEntry;

@@ -25,6 +25,7 @@
 
 <script>
 import Sidebar from './components/Sidebar';
+import store from './store';
 
 export default {
   components: { sidebar: Sidebar },
@@ -41,5 +42,6 @@ export default {
       this.totalTime -= parseFloat(timeEntry.totalTime);
     },
   },
+  store,
 };
 </script>

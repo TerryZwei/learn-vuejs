@@ -2,8 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import Home from './components/Home';
 import TimeEntries from './components/TimeEntries';
-import LogTime from './components/LogTime.vue';
-
+import LogTime from './components/LogTime';
 import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 
